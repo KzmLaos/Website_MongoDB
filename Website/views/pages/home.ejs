@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head.ejs') %>
+<body>
+    
+    <%- include('../partials/nav.ejs') %>
+    <div class="Blogs Content">
+        <h2>All Blogs</h2>
+        <% if(blogs.length > 0) {%>
+            <% blogs.forEach(blog => {%>
+            <h3 class="title"><%=blog.title %></h3>
+            <p class "desc"><%=blog.desc %></p>
+            <p class "qty"><%=blog.qty %></p>
+
+            <% }) %>
+        <%} else {%>
+        <p> There are no Obesity blog to display...</p>
+        <%} %>
+
+    </div>
+    <%- include('../partials/footer.ejs')%>
+
+    <!-- <head>
+         -->
+    <!--     <meta charset="utf-8" />
+        <meta name="viewport" content="width-device-width, initial-scale=1.0">
+        <title> WeigthScope</title>
+    </head>
+    <body>
+        <h1>Home</h1>
+        <h2>Embark on a journey into the depths of obesity science with WeightScope.</h2>    
+        <nav>
+            <a href="/">Homepage</a>
+            <a href="/about"> About Page</a>
+        </nav> -->
+    </body>
+</html>
