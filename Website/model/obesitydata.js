@@ -99,7 +99,7 @@ const obesitydataschema = new Schema ({
 }, {timestamps: true});
 
 // Create a model 
-const ObesityData = mongoose.model('obesitydata', obesitydataschema);
+const ObesityData = mongoose.model('obesity', obesitydataschema);
 
 //Export model for using in more parts of the application
 module.exports = ObesityData;

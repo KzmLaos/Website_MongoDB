@@ -1,43 +1,41 @@
-// 'use strict'
-// //const http = require('http');
-// // const fs = require('fs');//to read files
-// // var port = 3000;//can be any available port for node.js server
+//'use strict'
+const http = require('http');
+const fs = require('fs');//to read files
+var port = 3000;//can be any available port for node.js server
+var dbURI = 'mongodb://localhost:27017/obesity'
 
-
-// const express = require('express');
-// //const bodyParser = require("body-parser");
-// //const cors = require("cors");
+const express = require('express');
+const bodyParser = require("body-parser");
+const cors = require("cors");
 // /* const morgan = require('morgan');
 //  */
 
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-// //Create a new Express.js 
-// const app = express();
+// Create a new Express.js 
+const app = express();
 
 // //Set up Middleware
-// app.use(express.json());
-// const ObesityData = require('./model/obesitydata');
+app.use(express.json());
+const ObesityData = require('./model/obesitydata');
 
 // // Connect to MongoDB database
-// mongoose.connect('mongodb+srv://kazimlaos94:gVx4M2GS1mHfUe3L@cluster0.aiyokdc.mongodb.net/obesity',{
-
-// useNewUrlParser:true,
-// useUnifiedTopology:true,
+//mongoose.connect('mongodb+srv://kazimlaos94:gVx4M2GS1mHfUe3L@cluster0.aiyokdc.mongodb.net/obesity',{
+//mongoose.connect('mongodb://localhost:27017/obesity',{
 // });
 
-// // mongoose.connect(dbURI)
-// //     .then((result) => app.listen(3000))
-// //     .catch((err) => console.log(err));
+mongoose.connect(dbURI)
+     .then((result) => app.listen(3000))
+     .catch((err) => console.log(err));
 
 
 
-// var corsOptions = {   origin: "http://localhost:3000" };
+//var corsOptions = {   origin: "http://localhost:3000" };
 
 
 // //const {parse} = require('querystring');
 
-// /* const server = http.createServer((req, res) => {     
+//  const server = http.createServer((req, res) => {     
 //   console.log('request made')    
 //   //set header content type
 //   res.setHeader('Content-Type', 'text/html');//can text/plain
@@ -86,92 +84,85 @@
 //   })    
 // });
 
-// server.listen(port, 'localhost', () => {
-//   console.log('listening for requests on port 3000')
-// });*/
+//  server.listen(port, 'localhost', () => {
+//    console.log('listening for requests on port 3000')
+//  });
 
-// //listen for requests
-// //app.listen(3000);
+//listen for requests
+//app.listen(3000);
 
-// app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
-// //parse requests of content-type - application/json
-// app.use(bodyParser.json());
+//parse requests of content-type - application/json
+app.use(bodyParser.json());
 
-// //parse requests of content-type - application/x-www-form-urlencoded
-// app.use(bodyParser.urlencoded({ extended:true}));
-// app.use(express.json());
+//parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended:true}));
 
+//register view engine
+app.set('view engine', 'ejs');//it uses the default 'views' folder
 
-// //The connection options are not supported by this version of mongoose    
-// //mongoose.connect(dbURI, {useNewUriParser: true, userUnifiedToplolgy:true})
-// //    .then((result) => console.log('database connected'))
-// //    .catch((err) => console.error(err));
+//middleware and statyic file
+app.use(express.static('public'));
+//app.use(morgan('dev'));// option include, 'tiny', 'dev', 
+app.use(express.static(__dirname + '/public'));
 
-// //register view engine
-// app.set('view engine', 'ejs');//it uses the default 'views' folder
-
-// //middleware and statyic file
-// app.use(express.static('public'));
-// //app.use(morgan('dev'));// option include, 'tiny', 'dev', 
-// app.use(express.static(__dirname + '/public'));
-
-// app.get("/", (req, res) => {
-//   res.json({ message: "Welcome to User Authentication Application." });
-// });
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to User Authentication Application." });
+});
 
 
-// app.get('/list-things', (req, res) => {
-//   const blogs = [
-//       { title: 'eggs', desc: 'eggs come from hen', qty: '25' },
-//       { title: 'stars fish', desc: 'star fish is rare', qty: '25'},
-//       { title: 'jelly fish', desc: 'Jelly fish can be poision', qty: '25'},
-//   ];
-//   res.render('pages/home', { title: 'Home Sales Home', blogs: blogs});//render index.ejs and pass the title value to EJS file
-// });
+app.get('/list-things', (req, res) => {
+  const blogs = [
+      { title: 'eggs', desc: 'eggs come from hen', qty: '25' },
+      { title: 'stars fish', desc: 'star fish is rare', qty: '25'},
+      { title: 'jelly fish', desc: 'Jelly fish can be poision', qty: '25'},
+  ];
+  res.render('pages/home', { title: 'Home Sales Home', blogs: blogs});//render index.ejs and pass the title value to EJS file
+});
 
 
 
 
-// app.get('/add-obesity-data', (req, res) => {
-//   const obesity = new ObesityData({
-//     Age: 27,
-//     Gender: 'Male',
-//     Height: 1.78,
-//     Weight: 61,
-//     CALC: 'Sometimes',
-//     FAVC: 'yes',
-//     FCVC: 2,
-//     NCP: 3,
-//     SCC: 'no',
-//     SMOKE: 'no',
-//     CH20: 2,
-//     family_history_with_overweight: 'yes',
-//     FAF: 0,
-//     TUE: 1,
-//     CAEC: 'Sometimes',
-//     MTRANS: 'Public_Transportation',
-//     NObeyesdad: 'Normal_Weight'
-//   });    
-//   obesity.save()
-//     .then((result) => {
-//         res.send(result)
-//     })
-//     .catch((err) => {
-//         console.log(err);
-//     });
-// });
+app.get('/add-obesity-data', (req, res) => {
+  const obesity = new ObesityData({
+    Age: 27,
+    Gender: 'Male',
+    Height: 1.78,
+    Weight: 61,
+    CALC: 'Sometimes',
+    FAVC: 'yes',
+    FCVC: 2,
+    NCP: 3,
+    SCC: 'no',
+    SMOKE: 'no',
+    CH20: 2,
+    family_history_with_overweight: 'yes',
+    FAF: 0,
+    TUE: 1,
+    CAEC: 'Sometimes',
+    MTRANS: 'Public_Transportation',
+    NObeyesdad: 'Normal_Weight'
+  });    
+  obesity.save()
+    .then((result) => {
+        res.send(result)
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+});
 
 
-// app.get('/all-obesity', (req, res) => {
-//   ObesityData.find()
-//       .then((result) => {
-//           res.send(result)
-//       })
-//       .catch((err) => {
-//           console.log(err);
-//       });
-// })
+app.get('/all-obesity', (req, res) => {
+   ObesityData.find()
+       .then((result) => {
+           res.send(result)
+       })
+       .catch((err) => {
+           console.log(err);
+       });
+ })
 
 // app.get('/single-obesity', (req, res) => {
 //   ObesityData.findbyID('6637b801586b484e2b2d4b8d')//get ID from MongoDB and paster here
@@ -186,8 +177,8 @@
 
 
 
-//  app.get('/about', (req, res) => {
-//   res.render('pages/about', { title: 'About Sales Blog'});
+// app.get('/about', (req, res) => {
+//   res.render('./pages/about', { title: 'About Sales Blog'});
 // });
 // //redirects
 
@@ -237,48 +228,48 @@ app.get('/', (req, res) => {
 
 //npm requirements 'express'
 
-var express = require('express');
-var app = express();
-app.listen(3000, ()=> {
-  console.log('Server listening on 3000');
-})
+//var express = require('express');
+//var app = express();
+//app.listen(3000, ()=> {
+//  console.log('Server listening on 3000');
+//})
 
-const mongoose = require('mongoose');
-mongoose.connect('URL', () => {
-  console.log('Connected to Mongo DB successfully!!');
-})
+//const mongoose = require('mongoose');
+//mongoose.connect('URL', () => {
+//  console.log('Connected to Mongo DB successfully!!');
+//})
 
 //APIs for a routing mechanism
 //body parser to handle HTTP POST calls
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json());
+//const bodyParser = require('body-parser');
+//app.use(bodyParser.urlencoded({extended:true}));
+//app.use(bodyParser.json());
 
 //defining the route with express
-const router = express.Router();
-const User = require('../Website_Mongo10232952/model/user.js');
-const bcrypt = require('bcrypt');
-router.post('/user', (request, response) => {
-  const user = new User ({
-    firstname : request.body.firstname,
-    lastname: request.body.lastname,
-    username: request.body.username,
-    password: request.body.password,
-    email: request.body.email
-  });
+//const router = express.Router();
+//const User = require('model/user.js');
+//const bcrypt = require('bcrypt');
+//router.post('/user', (request, response) => {
+ // const user = new User ({
+ //   firstname : request.body.firstname,
+  //  lastname: request.body.lastname,
+  //  username: request.body.username,
+//    password: request.body.password,
+//    email: request.body.email
+//  });
 
-bcrypt.hash(user.password, 10, function(err, hash) {
-  if(err){
-    return next(err);
-  }
+//bcrypt.hash(user.password, 10, function(err, hash) {
+//  if(err){
+//    return next(err);
+ // }
 
-user.password = hash;
-user.save().then(data => {
-  console.log('Successfully created a new user');
-}).catch(error => {
+//user.password = hash;
+//user.save().then(data => {
+ // console.log('Successfully created a new user');
+//}).catch(error => {
 
-  })  
-})
-}) .module.exports = router
+ // })  
+//})
+//}) .module.exports = router
 
 
