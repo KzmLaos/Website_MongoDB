@@ -2,11 +2,22 @@
 const http = require('http');
 const fs = require('fs');//to read files
 var port = 3000;//can be any available port for node.js server
-var dbURI = 'mongodb://localhost:27017/obesity'
+var dbURI = 'mongodb+srv://kazim:cv2GI2l0j9VPhjtv@cluster0.7notzuc.mongodb.net/obesity'
 
 const express = require('express');
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require('path');
+
+
+var session = require('express-session');
+var cookieParser= require('cookie-parser');
+
+
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = '2f78e0664e0f2d86d15e8461d9362c832f0b7582532c71b45d4138d40b60dab9dd20c62b43d6e4ff9e4953c29e8b9ad94e2b1658e45d91bf77aa6c3a19075f06';
+const User = require('./model/User'); 
 // /* const morgan = require('morgan');
 //  */
 
@@ -17,6 +28,14 @@ const app = express();
 
 // //Set up Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.use(cookieParser());
+app.use(session({secret: "kazim"}));
+
+
 const ObesityData = require('./model/obesitydata');
 
 // // Connect to MongoDB database
@@ -29,69 +48,115 @@ mongoose.connect(dbURI)
      .catch((err) => console.log(err));
 
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views/pages'));
 
-//var corsOptions = {   origin: "http://localhost:3000" };
+
+//**************************************************
+
+//Managing users
 
 
-// //const {parse} = require('querystring');
+//Verify Authentication
+const authenticateJWT = (req, res, next) => {
+  //   console.log("showing request");
+  //   console.log(req.headers);
+  //   const token = req.headers['authorization'];
 
-//  const server = http.createServer((req, res) => {     
-//   console.log('request made')    
-//   //set header content type
-//   res.setHeader('Content-Type', 'text/html');//can text/plain
+  //   console.log(token);
+  //   console.log(JWT_SECRET);
+  // if (token) {
+  //   jwt.verify(token, JWT_SECRET, (err, user) => {
+  //     if (err) {
+  //       return res.sendStatus(403);
+  //     }
+  //     req.user = user;
+  //     next();
+  //   });
+  // } else {
+  //     console.log("Token verification failed");
+  //   res.sendStatus(401);
+  // }
+    if(req.session.authenticated){
+//	req.user = user;
+	next();
+    } else {
+	console.log("Verification failed");
+     res.sendStatus(401);
+   }
+};
 
-//   //showing HTML page based on URL passed
-//   let path = './views/pages/'
-//   console.log(req.url)
-//   switch(req.url){
-//     case '/':
-//       path += 'index.html';
-//       res.statusCode = 200;
-//       break;
-    
-//     case '/about':
-//       path += 'about.html';
-//       res.statusCode = 200;
-//       break;
 
-//     case '/about-me':
-//       res.statusCode= 301;
-//       res.setHeader('Location', '/about')
-//       break; 
 
-//     default:
-//       path += '404.html';
-//       res.statusCode = 404;
-//       break;
 
-//   }
- 
-//   //read an html file
-//   fs.readFile(path, (err, data) =>{
+// Route to render register page
+app.get('/register', (req, res) => {
+  res.render('register');
+});
 
-//   //read an html file 
-//   //fs.readFile('./views/pages/index.html', (err, data) => {
-//     if (err) {
-//         console.log(err);
-//         res.end();//close the response in case of error
-//     } else {
-//         //write the html file data to browser[use this option for writing multiple data items]
-//         //res.write(data);
+// Route to render login page
+app.get('/login', (req, res) => {
+  res.render('login');
+});
 
-//         //finally tell the server to show response to browser by passing the html file data
-//         res.end(data);
-//     }
-//   })    
-// });
+// Route to render search page
+app.get('/search', authenticateJWT, (req, res) => {
+//app.get('/search', (req, res) => {
+  res.render('search');
+});
 
-//  server.listen(port, 'localhost', () => {
-//    console.log('listening for requests on port 3000')
-//  });
 
-//listen for requests
-//app.listen(3000);
+// Route to render search page
+app.get('/filteredSearch', authenticateJWT, (req, res) => {
+//app.get('/search', (req, res) => {
+  res.render('filteredSearch');
+});
 
-//app.use(cors(corsOptions));
+
+
+
+// Route to register a new user
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = new User({ username, password });
+    await user.save();
+    res.status(201).send({ message: 'User registered successfully' });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: 'Error registering user' });
+  }
+});
+
+
+
+// Route to login a user
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).send({ message: 'Invalid username or password' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).send({ message: 'Invalid username or password' });
+    }
+      req.session.authenticated=true;
+      const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+      //res.status(200).j({message: 'Yeah'});
+      //res.send({ token: token });
+      res.status(200).json({token});
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: 'Error logging in' });
+  }
+});
+
+
+
+
 
 //parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -100,26 +165,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true}));
 
 //register view engine
-app.set('view engine', 'ejs');//it uses the default 'views' folder
-
-//middleware and statyic file
-app.use(express.static('public'));
-//app.use(morgan('dev'));// option include, 'tiny', 'dev', 
-app.use(express.static(__dirname + '/public'));
-
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to User Authentication Application." });
-});
+//app.set('view engine', 'ejs');//it uses the default 'views' folder
 
 
-app.get('/list-things', (req, res) => {
-  const blogs = [
-      { title: 'eggs', desc: 'eggs come from hen', qty: '25' },
-      { title: 'stars fish', desc: 'star fish is rare', qty: '25'},
-      { title: 'jelly fish', desc: 'Jelly fish can be poision', qty: '25'},
-  ];
-  res.render('pages/home', { title: 'Home Sales Home', blogs: blogs});//render index.ejs and pass the title value to EJS file
-});
+// app.get("/", (req, res) => {
+//   res.json({ message: "Welcome to User Authentication Application." });
+// });
 
 
 
@@ -153,6 +204,9 @@ app.get('/add-obesity-data', (req, res) => {
     });
 });
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.get('/all-obesity', (req, res) => {
    ObesityData.find()
@@ -175,7 +229,140 @@ app.get('/all-obesity', (req, res) => {
 // })
 
 
+// Route to get a single obesity data by ID
+app.get('/single-obesity', authenticateJWT, (req, res) => {
+  const id = req.query.id; // Extract the ID from query parameters
 
+  ObesityData.findById(id) // Use the extracted ID in the findById method
+    .then((result) => {
+      if (!result) {
+        return res.status(404).send({ message: 'Data not found' });
+      }
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err); // Send the error as a response
+    });
+});
+
+// app.get('/single-obesity/:id', (req, res) => {
+//   const id = req.params.id; // Extract the ID from path parameters
+
+//   ObesityData.findById(id) // Use the extracted ID in the findById method
+// 	.then((result) => {
+// 	    if (!result) {
+//         return res.status(404).send({ message: 'Data not found' });
+//       }
+//       res.send(result);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).send(err); // Send the error as a response
+//     });
+// });
+
+
+app.get('/single-obesity', (req, res) => {
+  const id = req.query.id; // Extract the ID from query parameters
+
+  ObesityData.findById(id) // Use the extracted ID in the findById method
+    .then((result) => {
+      if (!result) {
+        return res.status(404).send({ message: 'Data not found' });
+      }
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err); // Send the error as a response
+    });
+});
+
+
+
+// Route to update obesity data by ID
+app.put('/update-obesity/:id', authenticateJWT, (req, res) => {
+  const id = req.params.id; // Extract the ID from the request parameters
+  const updateData = req.body; // Extract the update data from the request body
+
+  // Use findByIdAndUpdate to update the document
+  ObesityData.findByIdAndUpdate(id, updateData, { new: true })
+    .then((result) => {
+      if (!result) {
+        return res.status(404).send({ message: 'Data not found' });
+      }
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err); // Send the error as a response
+    });
+});
+
+
+app.get('/filteredSearch', (req, res) => {
+    console.log("filtered Search");
+    // Retrieve filter parameters from query string
+    const { age, gender } = req.query;
+
+    // Construct the filter object based on provided parameters
+    const filter = {};
+    if (age) {
+        filter.Age = age;
+    }
+    if (gender) {
+        filter.Gender = gender;
+    }
+
+    // Query the database with the constructed filter object
+    ObesityData.find(filter)
+        .then(data => {
+            res.json(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        });
+});
+
+// // Route to update obesity data by ID
+// app.put('/update-obesity/:id', (req, res) => {
+//   const id = req.params.id; // Extract the ID from the request parameters
+//   const updateData = req.body; // Extract the update data from the request body
+
+//   // Use findByIdAndUpdate to update the document
+//   ObesityData.findByIdAndUpdate(id, updateData, { new: true })
+//     .then((result) => {
+//       if (!result) {
+//         return res.status(404).send({ message: 'Data not found' });
+//       }
+//       res.send(result);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).send(err); // Send the error as a response
+//     });
+// });
+
+
+// app.put('/update-obesity', (req, res) => {
+//   const id = req.params.id; // Extract the ID from path parameters
+//   const updateData = req.body; // Extract the update data from the request body
+
+//   // Use findByIdAndUpdate to update the document
+//   ObesityData.findByIdAndUpdate(id, updateData, { new: true })
+//     .then((result) => {
+//       if (!result) {
+//         return res.status(404).send({ message: 'Data not found' });
+//       }
+//       res.send(result);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).send(err); // Send the error as a response
+//     });
+// });
 
 // app.get('/about', (req, res) => {
 //   res.render('./pages/about', { title: 'About Sales Blog'});

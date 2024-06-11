@@ -1,0 +1,78 @@
+<%- include('../partials/header') %>
+<h2>Search and Update Obesity Data</h2>
+<form id="searchForm">
+    <label for="id">ID:</label>
+    <input type="text" id="id" name="id" required>
+    <button type="submit">Search</button>
+</form>
+<form id="updateForm" style="display: none;">
+    <input type="hidden" id="updateId" name="id">
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="Age"><br>
+    <label for="gender">Gender:</label>
+    <input type="text" id="gender" name="Gender"><br>
+    <label for="height">Height:</label>
+    <input type="number" id="height" name="Height" step="0.01"><br>
+    <label for="weight">Weight:</label>
+    <input type="number" id="weight" name="Weight"><br>
+    <!-- Add other fields as necessary -->
+    <button type="submit">Update</button>
+</form>
+<script>
+    document.getElementById('searchForm').onsubmit = async function (event) {
+        event.preventDefault();
+        const id = document.getElementById('id').value;
+        const token = localStorage.getItem('token');
+	console.log("Inside the search");
+        const response = await fetch(`/single-obesity?id=${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+        if (data) {
+            document.getElementById('updateId').value = data._id;
+            document.getElementById('age').value = data.Age;
+            document.getElementById('gender').value = data.Gender;
+            document.getElementById('height').value = data.Height;
+            document.getElementById('weight').value = data.Weight;
+            // Populate other fields as necessary
+            document.getElementById('updateForm').style.display = 'block';
+        } else {
+            alert('Data not found');
+        }
+    };
+
+    document.getElementById('updateForm').onsubmit = async function (event) {
+        event.preventDefault();
+        const id = document.getElementById('updateId').value;
+        const updateData = {
+            Age: document.getElementById('age').value,
+            Gender: document.getElementById('gender').value,
+            Height: document.getElementById('height').value,
+            Weight: document.getElementById('weight').value,
+            // Include other fields here
+        };
+
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(`/update-obesity/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(updateData),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert('Update successful');
+            console.log(result);
+        } else {
+            alert('Update failed');
+            console.log(await response.text());
+        }
+    };
+</script>
+<%- include('../partials/footer') %>

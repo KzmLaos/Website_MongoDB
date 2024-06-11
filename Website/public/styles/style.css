@@ -1,284 +1,41 @@
-.background{
-  filter: brightness(4.5);
-}
 body {
-  background-color: rgb(185, 153, 196);
-  background-image: url('../res/Background\ pictureB.jpg');
-  background-repeat: no-repeat;
-  background-attachment: fixed; 
-  background-size: 100% 100%;
-}
-h1 {
-  color: blue;
-}
-p {
-  color: black;
-}
-ol, ul {
-    list-style: none;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-.header_block{
-  text-align: center;
-  background-color: white;
-}
-div.navigationMenu{
-  text-align: center;
-}
-#navigation{
-    font-family: sans-serif;
+header {
+    background: #4CAF50;
+    color: white;
+    padding: 1em;
     text-align: center;
-
-}
-#navigation li{
-  display: inline-block;
-  margin-left: -1px;
-  border:1px solid #28a349;
-  text-align: center;
-
-
-}
-#navigation a {
-  display: block;
-  padding:3px;
-  margin:2px;
-  text-decoration:none;
-  color:rgb(0, 0, 0);
-}
-#navigation a:visited {
-  display: block;
-  padding:3px;
-  margin:2px;
-  text-decoration:none;
-  color:rgb(0, 0, 0);
-}
-#navigation a:hover {
-  display: block;
-  padding:3px;
-  margin:2px;
-  text-decoration:none;
-  color:rgb(148, 216, 30);
 }
 
-#aboutUs {
-  display: block;
-  padding:3px;
-  margin:2px;
-  text-decoration:none;
-  background-color:#e54e30;
-  color:rgb(0, 0, 0);
-  font-family: 'Times New Roman', Times, serif;
+nav ul {
+    list-style-type: none;
+    padding: 0;
 }
 
-.form-group {
-  margin-bottom: 15px;
+nav ul li {
+    display: inline;
+    margin: 0 1em;
 }
 
-label {
-  display: block;
-  font-weight: bold;
-}
-
-input[type="text"],
-input[type="email"],
-textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background-color: #007BFF;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-
-#lineUp {
-  display: block;
-  padding:3px;
-  margin: 1px;
-  text-decoration:none;
-  background-color:#30d6e5;
-  color:rgb(0, 0, 0);
-}
-#StagesCategories {
-  display:block;
-  padding: 3px;
-  margin: 1px;
-  text-decoration: none;
-  background-color: #40d429;
-  color: #0e1a11;
-}
-#faq {
-  display:block;
-  padding: 3px;
-  margin:1px;
-  text-decoration: none;
-  background-color: rgb(198, 126, 32);
-  color:#0e1a11;
-}
-#ContactUs {
-  display:block;
-  padding: 3px;
-  margin:1px;
-  text-decoration: none;
-  background-color: rgb(201, 230, 55);
-  color: #0e1a11;
-}
-.normalp {
-  display:block;
-  padding: 3px;
-  margin: 10px;
-  text-align: center;
-}
-#ContactForm{
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f4f4f4;
-}
-
-.container {
-  display: block;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.container table {
-  border-collapse: collapse;
-  justify-content: center;
-  align-items: center;
-  width: 90%; 
-} 
-
-.gallery {
-  text-align: center;
-}
-
-.image {
-    display: inline-block;
-    margin: 10px; /* Adjust spacing between images */
-}
-
-.image img {
-  width: 200px; 
-  height: 200px;
-}
-.image p {
-  margin-top: 5px; /* Add some spacing between the image and text */
-}
-/* Apply styles to FAQ section */
-.faq {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/* Style FAQ items */
-.faq-item {
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-/* Style FAQ item headings */
-.faq-item h2 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-
-
-.logo {
-        width: 150px;
-        height: auto; /* Maintain aspect ratio */
-        margin-top: 10px; /* Add margin to position it */
-
-}
-
-/* Style FAQ item content */
-.faq-item p {
-  margin: 10px 0;
-}
-
-search{
-  width: 300px; /* Adjust the width as needed */
-  padding: 20px; /* Add padding for better appearance */
-  border: 1px solid #ccc; /* Add a border for clarity */
-  border-radius: 5px; /* Round the corners */
-  font-size: 16px; /* Set the font size */
-}
-
-.styled-text {
-  font-size: 18px;
-  color: #333; /* Text color in hexadecimal or other color format */
-  text-align: center;
-}
-
-/* Apply styles to FAQ section */
-.lup {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/* Style FAQ items */
-.lup-item {
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-/* Style FAQ item headings */
-.lup-item h2 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-/* Style FAQ item content */
-.lup-item p {
-  margin: 10px 0;
-}
-
-.logo {
-  margin: 10px;
-  border: 2px solid #881e1e;
-  border-radius: 5px;
-}
-
-/* About us content */
-p {
-  font-family: Arial, sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    line-height: 1.5;
-    text-align: left;
+nav ul li a {
+    color: white;
     text-decoration: none;
 }
-.centerh3{
-  text-align: center;
 
+main {
+    padding: 2em;
 }
-/* Contact us content */
-.logo {
-  margin: 10px;
-  border: 2px solid #351a97;
-  border-radius: 5px;
+
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 1em;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
