@@ -1,0 +1,105 @@
+<%- include('../partials/header') %>
+<h2>Search and Update Obesity Data</h2>
+<form id="searchForm">
+    <label for="id">ID:</label>
+    <input type="text" id="id" name="id" required>
+    <button type="submit">Search</button>
+</form>
+<form id="updateForm" style="display: none;">
+    <input type="hidden" id="updateId" name="id">
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="Age"><br>
+    <label for="gender">Gender:</label>
+    <input type="text" id="gender" name="Gender"><br>
+    <label for="height">Height:</label>
+    <input type="number" id="height" name="Height" step="0.01"><br>
+    <label for="weight">Weight:</label>
+    <input type="number" id="weight" name="Weight"><br>
+
+    <label for="calc">CALC:</label>
+    <input type="text" name="CALC" id="calc"><br><br>
+    <label for="favc">FAVC:</label>
+    <input type="text" name="FAVC" id="favc"><br><br>
+    <label for="fcvc">FCVC:</label>
+    <input type="number" name="FCVC" id="fcvc"><br><br>
+    <label for="ncp">NCP:</label>
+    <input type="number" name="NCP" id="ncp"><br><br>
+    <label for="scc">SCC:</label>
+    <input type="text" name="SCC" id="scc"><br><br>
+    <label for="smoke">SMOKE:</label>
+    <input type="text" name="SMOKE" id="smoke"><br><br>
+    <label for="ch2o">CH2O:</label>
+    <input type="number" name="CH2O" id="ch2o"><br><br>
+    <label for="family_history_with_overweight">Family History with Overweight:</label>
+    <input type="text" name="family_history_with_overweight" id="family_history_with_overweight" required><br><br>
+    <label for="faf">FAF:</label>
+    <input type="number" name="FAF" id="faf"><br><br>
+    <label for="tue">TUE:</label>
+    <input type="number" name="TUE" id="tue"><br><br>
+    <label for="caec">CAEC:</label>
+    <input type="text" name="CAEC" id="caec"><br><br>
+    <label for="mtrans">Means of Transportation:</label>
+    <input type="text" name="MTRANS" id="mtrans"><br><br>
+    <label for="nobeyesdad">Nutritional Status:</label>
+    <input type="text" name="NObeyesdad" id="nobeyesdad"><br><br>
+    <!-- Add other fields as necessary -->
+    <button type="submit">Update</button>
+</form>
+<script>
+    document.getElementById('searchForm').onsubmit = async function (event) {
+        event.preventDefault();
+        const id = document.getElementById('id').value;
+        const token = localStorage.getItem('token');
+	console.log("Inside the search");
+        const response = await fetch(`/single-obesity?id=${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+        if (data) {
+            document.getElementById('updateId').value = data._id;
+            document.getElementById('age').value = data.Age;
+            document.getElementById('gender').value = data.Gender;
+            document.getElementById('height').value = data.Height;
+            document.getElementById('weight').value = data.Weight;
+            // Populate other fields as necessary
+            document.getElementById('updateForm').style.display = 'block';
+        } else {
+            alert('Data not found');
+        }
+    };
+
+    document.getElementById('updateForm').onsubmit = async function (event) {
+        event.preventDefault();
+        const id = document.getElementById('updateId').value;
+        const updateData = {
+            Age: document.getElementById('age').value,
+            Gender: document.getElementById('gender').value,
+            Height: document.getElementById('height').value,
+            Weight: document.getElementById('weight').value,
+            // Include other fields here
+        };
+
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(`/update-obesity/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(updateData),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert('Update successful');
+            console.log(result);
+        } else {
+            alert('Update failed');
+            console.log(await response.text());
+        }
+    };
+</script>
+<%- include('../partials/footer') %>

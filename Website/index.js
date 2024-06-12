@@ -44,9 +44,13 @@ const ObesityData = require('./model/obesitydata');
 // });
 
 mongoose.connect(dbURI)
-     .then((result) => app.listen(3000))
+     .then((result) => app.listen(3000, ()=> {
+        console.log('Server listening on 3000')}))
      .catch((err) => console.log(err));
 
+//app.listen(3000, ()=> {
+//  console.log('Server listening on 3000');
+//})
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views/pages'));
@@ -92,6 +96,11 @@ const authenticateJWT = (req, res, next) => {
 // Route to render register page
 app.get('/register', (req, res) => {
   res.render('register');
+});
+
+// Route to render login page
+app.get('/', (req, res) => {
+  res.render('login');
 });
 
 // Route to render login page
@@ -325,6 +334,87 @@ app.get('/filteredSearch', (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
         });
 });
+
+
+
+
+//***********  Add Operation
+
+// Route to render login page
+app.get('/add', (req, res) => {
+  res.render('add');
+});
+
+
+// Register route (POST)
+app.post('/add', async (req, res) => {
+  const { Age, 
+    Gender, 
+    Height, 
+    Weight, 
+    CALC,
+    FAVC,
+    FCVC,
+    NCP,
+    SCC,
+    SMOKE,
+    CH20,
+    family_history_with_overweight,
+    FAF,
+    TUE,
+    CAEC,
+    MTRANS,
+    NObeyesdad } = req.body; // Destructure data
+  console.log(Weight);
+  console.log(CH20);
+  const newData = new ObesityData({
+    Age,
+    Gender,
+    Height,
+    Weight,
+    CALC,
+    FAVC,
+    FCVC,
+    NCP,
+    SCC,
+    SMOKE,
+    CH20,
+    family_history_with_overweight,
+    FAF,
+    TUE,
+    CAEC,
+    MTRANS,
+    NObeyesdad
+    // Add hashed password if applicable
+  });
+
+  try {
+    const savedData = await newData.save();
+    res.send('Input successfully added!'); // Change this to a proper response
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error adding data!');
+  }
+});
+
+
+// ****************** Delete Operations
+
+app.get('/delete/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      return res.status(404).send('User not found!');
+    }
+    res.send('User deleted successfully!'); // Change to a proper response
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error deleting user!');
+  }
+});
+
 
 // // Route to update obesity data by ID
 // app.put('/update-obesity/:id', (req, res) => {

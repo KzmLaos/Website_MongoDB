@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+<h2>Add Data to Obesity</h2>
+<form action="/add" method="POST">
+    <label for="age">Age:</label>
+    <input type="number" name="Age" id="age" required><br><br>
+    <label for="gender">Gender:</label>
+    <input type="text" name="Gender" id="gender" required><br><br>
+    <label for="height">Height:</label>
+    <input type="number" name="Height" id="height" required><br><br>
+    <label for="weight">Weight:</label>
+    <input type="number" name="Weight" id="weight" required><br><br>
+
+    <label for="calc">CALC:</label>
+    <input type="text" name="CALC" id="calc"><br><br>
+    <label for="favc">FAVC:</label>
+    <input type="text" name="FAVC" id="favc"><br><br>
+    <label for="fcvc">FCVC:</label>
+    <input type="number" name="FCVC" id="fcvc"><br><br>
+    <label for="ncp">NCP:</label>
+    <input type="number" name="NCP" id="ncp"><br><br>
+    <label for="scc">SCC:</label>
+    <input type="text" name="SCC" id="scc"><br><br>
+    <label for="smoke">SMOKE:</label>
+    <input type="text" name="SMOKE" id="smoke"><br><br>
+    <label for="ch2o">CH20:</label>
+    <input type="number" name="CH20" id="ch2o"><br><br>
+    <label for="family_history_with_overweight">Family History with Overweight:</label>
+    <input type="text" name="family_history_with_overweight" id="family_history_with_overweight" required><br><br>
+    <label for="faf">FAF:</label>
+    <input type="number" name="FAF" id="faf"><br><br>
+    <label for="tue">TUE:</label>
+    <input type="number" name="TUE" id="tue"><br><br>
+    <label for="caec">CAEC:</label>
+    <input type="text" name="CAEC" id="caec"><br><br>
+    <label for="mtrans">Means of Transportation:</label>
+    <input type="text" name="MTRANS" id="mtrans"><br><br>
+    <label for="nobeyesdad">Nutritional Status:</label>
+    <input type="text" name="NObeyesdad" id="nobeyesdad"><br><br>
+
+    <button type="submit">Register</button>
+</form>
+
+<%- include('../partials/footer') %>
