@@ -1,0 +1,46 @@
+<%- include('../partials/header') %>
+<h2>Filtered Search</h2>
+<form id="filterForm">
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age"><br>
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender">
+        <option value="">All</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    </select><br>
+    <!-- Add other filters as necessary -->
+    <button type="submit">Apply Filters</button>
+</form>
+<div id="results"></div>
+
+<script>
+    document.getElementById('filterForm').onsubmit = async function(event) {
+        event.preventDefault();
+        const age = document.getElementById('age').value;
+        const gender = document.getElementById('gender').value;
+
+        //const response = await fetch(`/filteredSearch?age=${age}&gender=${gender}`);
+	const response = await fetch(`/single-obesity?id=666898e323fc7f530df0445d`);
+
+        const data = await response.json();
+
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+
+        if (data.length === 0) {
+            resultsDiv.innerHTML = '<p>No results found.</p>';
+        } else {
+            resultsDiv.innerHTML = '<p>Results found.</p>';
+            const ul = document.createElement('ul');
+            data.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = JSON.stringify(item);
+                ul.appendChild(li);
+            });
+            //resultsDiv.appendChild(ul);
+	    results.innerHTML= `Age: ${item.Age}, Gender: ${item.Gender}`;
+        }
+    };
+</script>
+<%- include('../partials/footer') %>
