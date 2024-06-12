@@ -20,8 +20,8 @@
         const age = document.getElementById('age').value;
         const gender = document.getElementById('gender').value;
 
-        //const response = await fetch(`/filteredSearch?age=${age}&gender=${gender}`);
-	const response = await fetch(`/single-obesity?id=666898e323fc7f530df0445d`);
+        const response = await fetch(`/filteredSearchData?age=${age}&gender=${gender}`);
+	//const response = await fetch(`/single-obesity?id=666898e323fc7f530df0445d`);
 
         const data = await response.json();
 
@@ -35,11 +35,29 @@
             const ul = document.createElement('ul');
             data.forEach(item => {
                 const li = document.createElement('li');
-                li.textContent = JSON.stringify(item);
+                li.textContent = `
+                Id:  ${item._id},
+                Age: ${item.Age}, 
+                Gender: ${item.Gender},
+                Height: ${item.Height}, 
+                Weight: ${item.Weight}, 
+                CALC: ${item.CALC},
+                FAVC: ${item.FAVC},
+                FCVC: ${item.FCVC},
+                NCP: ${item.NCP},
+                SCC: ${item.SCC},
+                SMOKE: ${item.SMOKE},
+                CH20: ${item.CH20},
+                family_history_with_overweight: ${item.family_history_with_overweight},
+                FAF: ${item.FAF},
+                TUE: ${item.TUE},
+                CAEC: ${item.CAEC},
+                MTRANS: ${item.MTRANS},
+                NObeyesdad: ${item.NObeyesdad}
+                `;
                 ul.appendChild(li);
             });
-            //resultsDiv.appendChild(ul);
-	    results.innerHTML= `Age: ${item.Age}, Gender: ${item.Gender}`;
+            resultsDiv.appendChild(ul);
         }
     };
 </script>

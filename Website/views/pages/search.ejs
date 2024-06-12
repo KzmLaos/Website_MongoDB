@@ -1,9 +1,14 @@
 <%- include('../partials/header') %>
 <h2>Search and Update Obesity Data</h2>
+<form id="deleteForm">
+    <label for="idDelete">ID:</label>
+    <input type="text" id="idDelete" name="idDelete" required>
+    <button type="submit">Delete</button>
+</form>
 <form id="searchForm">
-    <label for="id">ID:</label>
-    <input type="text" id="id" name="id" required>
-    <button type="submit">Search</button>
+    <label for="idSearch">ID:</label>
+    <input type="text" id="idSearch" name="idSearch" required>
+    <button type="submit">Search / Update</button>
 </form>
 <form id="updateForm" style="display: none;">
     <input type="hidden" id="updateId" name="id">
@@ -21,13 +26,9 @@
 <script>
     document.getElementById('searchForm').onsubmit = async function (event) {
         event.preventDefault();
-        const id = document.getElementById('id').value;
-        const token = localStorage.getItem('token');
-	console.log("Inside the search");
+        const id = document.getElementById('idSearch').value;
+	    console.log("Inside the search");
         const response = await fetch(`/single-obesity?id=${id}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
         });
         const data = await response.json();
         if (data) {
@@ -43,6 +44,22 @@
         }
     };
 
+    document.getElementById('deleteForm').onsubmit = async function (event) {
+        event.preventDefault();
+        const id = document.getElementById('idDelete').value;
+        const response = await fetch(`/delete/?id=${id}`, {
+            method: 'DELETE',
+         });
+         if (response.ok) {
+            const result = await response.json();
+            alert('Delete successful');
+            console.log(result);
+        } else {
+            alert('Delete failed');
+            console.log(await response.text());
+        }
+     };
+
     document.getElementById('updateForm').onsubmit = async function (event) {
         event.preventDefault();
         const id = document.getElementById('updateId').value;
@@ -54,13 +71,11 @@
             // Include other fields here
         };
 
-        const token = localStorage.getItem('token');
 
         const response = await fetch(`/update-obesity/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify(updateData),
         });

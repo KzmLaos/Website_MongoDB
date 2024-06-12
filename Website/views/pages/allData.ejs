@@ -1,0 +1,35 @@
+<%- include('../partials/header') %>
+<h2>All Data to Obesity</h2>
+  <% if (obesity.length > 0) { %>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Height</th>
+        <th>Weight</th>
+        <th>CALC</th>
+        <th>FAVC</th>
+        <th>FCVC</th>
+        </tr>
+    </thead>
+    <tbody>
+      <% for (const user of obesity) { %>
+      <tr>
+        <td><%= user.id %></td>
+        <td><%= user.Age %></td>
+        <td><%= user.Gender %></td>
+        <td><%= user.Height %></td>
+        <td><%= user.Weight %></td>
+        <td><%= user.CALC %></td>
+        <td><%= user.FAVC %></td>
+        <td><%= user.FCVC %></td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+  <% } else { %>
+    <p>No data found in the database!</p>
+  <% } %>
+<%- include('../partials/footer') %>
